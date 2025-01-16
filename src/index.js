@@ -281,10 +281,10 @@ export default class SimpleCarousel {
     });
     removeBtn.innerHTML = this.IconClose;
     removeBtn.addEventListener('click', () => {
-      block.remove();
       if(this.config.endpoints.removeImage !== '' || this.config.endpoints.removeImage !== undefined) {
         this.removeImage(block.querySelector('img').getAttribute('src'));
       }
+      block.remove();
     });
     removeBtn.style.display = 'none';
 
