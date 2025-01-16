@@ -44,6 +44,7 @@ export default class SimpleCarousel {
       captionPlaceholder: this.api.i18n.t('Caption'),
       buttonContent: config.buttonContent || '',
       uploader: config.uploader || undefined,
+      removeImage : config.removeImage || undefined,
       actions: config.actions || [],
       galleryCallback: config.galleryCallback || {}
     };
@@ -361,19 +362,30 @@ export default class SimpleCarousel {
    * @private
    */
   removeImage(url) {
-    ajax.post({
-      url: this.config.endpoints.removeImage,
-      data: {
-        image: url,
-      },
-      mode: 'same-origin',
-      type: ajax.contentType.FORM,
-      headers: Object.assign({'X-CSRFToken': document.querySelector('[name=csrf-token]').getAttribute('content')}, this.config.additionalRequestHeaders),
-    }).then(response => {
-      response.body;
-    }).catch((error) => {
-      error.body;
-    });
+    if (typeof this.config.removeImage == 'function') {
+      this.config.removeImage();
+    } else {
+      const csrfToken = document.querySelector('[name=csrf-token]');
+      let token = '';
+
+      if (csrfToken) {
+        token = csrfToken.getAttribute('content');
+      }
+
+      ajax.post({
+        url: this.config.endpoints.removeImage,
+        data: {
+          image: url,
+        },
+        mode: 'same-origin',
+        type: ajax.contentType.FORM,
+        headers: Object.assign({'X-CSRFToken': token}, this.config.additionalRequestHeaders),
+      }).then(response => {
+        response.body;
+      }).catch((error) => {
+        error.body;
+      });
+    }
   }
 
   /**
